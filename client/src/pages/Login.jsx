@@ -36,7 +36,7 @@ const Login = () => {
           <div className="absolute h-[4%] w-[11.56%] top-[77.95%] left-[38.93%] font-semibold inline-block">{`Not Registered? `}</div>
           
             <div className="absolute h-[4%] w-[9.75%] top-[77.95%] left-[51.1%] font-semibold text-orangered inline-block">
-            <Link to="/register">Register here</Link>
+            <Link to="/Register">Register here</Link>
           </div>
           <img
             className="absolute h-[26.23%] w-[40.82%] top-[7.57%] right-[29.55%] bottom-[66.2%] left-[29.63%] max-w-full overflow-hidden max-h-full object-cover"

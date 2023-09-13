@@ -4,11 +4,13 @@ import cors from 'cors'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import cookieParser from 'cookie-parser'
+import pkg from 'jsonwebtoken';
+const { verify } = pkg;
 
 const salt = 10;
 const app = express();
 app.use(cors({ 
-    origin : [ "http://localhost:3000"],
+    origin : ["http://localhost:3000"],
     methods: ["POST", "GET"],
     credentials: true,
 }));
@@ -20,6 +22,26 @@ const db = mysql2.createConnection({
     user: 'root',
     password: '',
     database: 'knowledge',
+})
+
+const verifyUser = (req, res, next) => {
+    const token = req.cookies.token;
+    if(!token) {
+        return res.json({Status: "Unauthorized"});
+    } else {
+    jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+        if(err) {
+            return res.json({Status: "Incorrect token!"});
+        } else {
+            req.name = decoded.name;
+            next();
+        }
+        })
+    }
+}
+
+app.get('/', verifyUser, (req, res) => {
+    return res.json({Status: "Success", name: req.name});
 })
 
 app.post('/Register', (req, res) => {
@@ -60,9 +82,14 @@ app.post('/login', (req, res) =>{
                 }
             })
         } else {
-            return res.json({Erroe: "User does not exist"});
+            return res.json({Error: "User does not exist"});
         }    
     })
+})
+
+app.get('/Logout', (req, res) => {
+    res.clearCookie('token');
+    return res.json({Status: "Success"});
 })
 
 app.listen(8081, () => {

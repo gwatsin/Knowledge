@@ -24,8 +24,6 @@ function Register() {
           alert("Error");
       }
     })
-    .then(res => console.log(res))
-    .then(res => console.log(values))
     .then(err => console.log(err));
   }
 
