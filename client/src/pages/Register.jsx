@@ -8,16 +8,17 @@ import { Link } from "react-router-dom";
 
 function Register() {
   const[values, setValues] = useState({
-    name: '',
     email: '',
-    password: ''
+    password: '',
+    name: ''
   })
   //const navigate = useNavigate()
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    axios.post('http://localhost:8081/register', values)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:8081/Register', values)
     .then(res => console.log(res))
+    .then(res =>console.log(values))
     .then(err => console.log(err));
   }
 
