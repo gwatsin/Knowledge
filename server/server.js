@@ -23,19 +23,37 @@ const db = mysql2.createConnection({
 
 app.post('/Register', (req, res) => {
     let sql2 = "INSERT INTO `users` (email, password, name) VALUES (?, ?, ?)";
-    var values = [
-        req.body.email,
-        req.body.password,
-        req.body.name
-    ];
-    console.log(values)
-    db.query(sql2, values, (err,result) => {
-        if (err) {
-            return res.status(500).json({ Error: "Inserting Data errors" });
-        }
-        return res.status(200).json({ Status: "User Registered" });
+    bcrypt.hash(req.body.password.toString(), salt, (err, hash) => {
+        if(err) return res.json({Error: "Error hashing password"});
+        const values = [
+            req.body.email,
+            hash,
+            req.body.name
+        ];
+        console.log(values)
+        db.query(sql2, values, (err,result) => {
+            if (err) {
+                return res.status(500).json({ Error: "Inserting Data errors" });
+            }
+            return res.status(200).json({ Status: "Success" });
+        })
     })
-    
+})
+
+app.post('/login', (req, res) =>{
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.query(sql, [req.body.email], (err, data) => {
+        if(err) return res.json({Error: "Login error"});
+        if(data.length > 0){
+            bcrypt.compare(req.body.password.toString(), data[0].password, (err, response) => {
+                if(err) return res.json({Error: "Password compare error"});
+                if(response) return res.json({Status: "Success"});
+                else return res.json({Error: "Password incorrect"});
+            })
+        } else {
+            return res.json({Erroe: "User does not exist"});
+        }    
+    })
 })
 
 app.listen(8081, () => {

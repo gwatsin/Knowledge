@@ -12,13 +12,20 @@ function Register() {
     password: '',
     name: ''
   })
-  //const navigate = useNavigate()
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post('http://localhost:8081/Register', values)
+    .then(res => {
+      if(res.data.Status === "Success"){
+        navigate('/Login')
+      } else {
+          alert("Error");
+      }
+    })
     .then(res => console.log(res))
-    .then(res =>console.log(values))
+    .then(res => console.log(values))
     .then(err => console.log(err));
   }
 

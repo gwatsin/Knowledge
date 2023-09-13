@@ -6,25 +6,26 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-    const[values, setValues] = useState({
-      email: '',
-      password: ''
-    })
-    const navigate = useNavigate()
-    axios.defaults.withCredentials = true;
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      axios.post('http://localhost:8081/login', values)
-      .then(res => {
-        if(res.data.Status === "Success"){
-          navigate('/')
-        } else{
-          alert(res.data.Message)
-        }
+  const[values, setValues] = useState({
+    email: '',
+    password: ''
+  })
+  const navigate = useNavigate()
 
-      })
-      .catch(err => console.log(err));
-    }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:8081/Login', values)
+    .then(res => {
+      if(res.data.Status === "Success"){
+        navigate('/')
+      } else {
+          alert("Error");
+      }
+    })
+    .then(res => console.log(res))
+    .then(res => console.log(values))
+    .then(err => console.log(err));
+  }
 
   return (
     <div className="relative bg-white w-full h-[1173px] overflow-hidden text-left text-xl text-black font-open-sans">
