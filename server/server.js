@@ -9,7 +9,8 @@ const salt = 10;
 const app = express();
 app.use(cors({ 
     origin : [ "http://localhost:3000"],
-    credentials:true,
+    methods: ["POST", "GET"],
+    credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
@@ -46,9 +47,17 @@ app.post('/login', (req, res) =>{
         if(err) return res.json({Error: "Login error"});
         if(data.length > 0){
             bcrypt.compare(req.body.password.toString(), data[0].password, (err, response) => {
-                if(err) return res.json({Error: "Password compare error"});
-                if(response) return res.json({Status: "Success"});
-                else return res.json({Error: "Password incorrect"});
+                if(err) {
+                    return res.json({Error: "Password compare error"});
+                }
+                if(response) {
+                    const name = data[0].name;
+                    const token = jwt.sign({name}, "jwt-secret-key", {expiresIn: '1d'});
+                    res.cookie('token', token);
+                    return res.json({Status: "Success"});
+                } else {
+                    return res.json({Error: "Password incorrect"});
+                }
             })
         } else {
             return res.json({Erroe: "User does not exist"});

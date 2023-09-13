@@ -11,7 +11,7 @@ const Login = () => {
     password: ''
   })
   const navigate = useNavigate()
-
+  axios.defaults.withCredentials = true;
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post('http://localhost:8081/Login', values)
@@ -19,7 +19,7 @@ const Login = () => {
       if(res.data.Status === "Success"){
         navigate('/')
       } else {
-          alert("Error");
+          alert(res.data.Error);
       }
     })
     .then(res => console.log(res))
